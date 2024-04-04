@@ -21,6 +21,7 @@ void main()
 
 		cout << "1. Вывести массив" << endl;
 		cout << "2. Отсортировать по возрастанию" << endl;
+		cout << "3. Отсортировать по убыванию" << endl;
 		cout << "0. Выход" << endl;
 
 		int input;
@@ -39,6 +40,9 @@ void main()
 			break;
 		case 2:
 			sort(arr, arr + size);
+			break;
+		case 3:
+			sort(arr, arr + size, [](int a, int b) {return a > b; });
 			break;
 		default:
 			break;
