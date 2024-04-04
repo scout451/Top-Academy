@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Windows.h>
+#include <algorithm>
 using namespace std;
 
 void main()
@@ -19,6 +20,7 @@ void main()
 		system("cls");
 
 		cout << "1. Вывести массив" << endl;
+		cout << "2. Отсортировать по возрастанию" << endl;
 		cout << "0. Выход" << endl;
 
 		int input;
@@ -34,6 +36,10 @@ void main()
 				cout << arr[i] << " ";
 			cout << endl;
 			system("pause");
+			break;
+		case 2:
+			sort(arr, arr + size);
+			break;
 		default:
 			break;
 		}
