@@ -6,9 +6,9 @@ using namespace std;
 class Fraction 
 {
 private:
-    int integer;
-    int numerator;
-    int denominator;
+    int Integer;
+    int Numerator;
+    int Denominator;
 
     // Наибольший общий делитель
     int GreatestCommonDivisor(int a, int b)
@@ -33,44 +33,44 @@ private:
 
 public:
     // Конструктор
-    Fraction(int i, int n, int d) : integer(i), numerator(n), denominator(d)
+    Fraction(int i, int n, int d) : Integer(i), Numerator(n), Denominator(d)
     {
     }
 
     // Перевести дробь в неправильный вид
     void Improper() 
     {
-        bool isNegative = integer < 0;
+        bool isNegative = Integer < 0;
 
-        numerator += abs(integer) * denominator;
-        integer = 0;
+        Numerator += abs(Integer) * Denominator;
+        Integer = 0;
 
         if (isNegative)
-            numerator *= -1;
+            Numerator *= -1;
     }
 
     // Перевести дробь в правильный вид
     void Correct() 
     {
-        integer += numerator / denominator;
-        numerator = abs(numerator) % denominator;
+        Integer += Numerator / Denominator;
+        Numerator = abs(Numerator) % Denominator;
     }
 
     // Сократить дробь
     void Reduce() 
     {
-        int reduceBy = GreatestCommonDivisor(numerator, denominator);
+        int reduceBy = GreatestCommonDivisor(Numerator, Denominator);
 
-        numerator /= reduceBy;
-        denominator /= reduceBy;
+        Numerator /= reduceBy;
+        Denominator /= reduceBy;
     }
 
     // Перевести дробь в строку
     string ToString() 
     {
-        return to_string(integer) + ":" +
-            to_string(numerator) + "/" +
-            to_string(denominator);
+        return to_string(Integer) + ":" +
+            to_string(Numerator) + "/" +
+            to_string(Denominator);
     }
 
     // Сумма дробей
@@ -82,15 +82,15 @@ public:
         tempA.Improper();
         tempB.Improper();
 
-        int commonDenominator = LeastCommonMultiple(denominator, other.denominator);
+        int commonDenominator = LeastCommonMultiple(Denominator, other.Denominator);
 
-        tempA.numerator *= commonDenominator / tempA.denominator;
-        tempA.denominator = commonDenominator;
+        tempA.Numerator *= commonDenominator / tempA.Denominator;
+        tempA.Denominator = commonDenominator;
 
-        tempB.numerator *= commonDenominator / tempB.denominator;
-        tempB.denominator = commonDenominator;
+        tempB.Numerator *= commonDenominator / tempB.Denominator;
+        tempB.Denominator = commonDenominator;
 
-        tempA.numerator += tempB.numerator;
+        tempA.Numerator += tempB.Numerator;
 
         tempA.Reduce();
         tempA.Correct();
@@ -107,15 +107,15 @@ public:
         tempA.Improper();
         tempB.Improper();
 
-        int commonDenominator = LeastCommonMultiple(denominator, other.denominator);
+        int commonDenominator = LeastCommonMultiple(Denominator, other.Denominator);
 
-        tempA.numerator *= commonDenominator / tempA.denominator;
-        tempA.denominator = commonDenominator;
+        tempA.Numerator *= commonDenominator / tempA.Denominator;
+        tempA.Denominator = commonDenominator;
 
-        tempB.numerator *= commonDenominator / tempB.denominator;
-        tempB.denominator = commonDenominator;
+        tempB.Numerator *= commonDenominator / tempB.Denominator;
+        tempB.Denominator = commonDenominator;
 
-        tempA.numerator -= tempB.numerator;
+        tempA.Numerator -= tempB.Numerator;
 
         tempA.Reduce();
         tempA.Correct();
@@ -132,8 +132,8 @@ public:
         tempA.Improper();
         tempB.Improper();
 
-        tempA.numerator *= tempB.numerator;
-        tempA.denominator *= tempB.denominator;
+        tempA.Numerator *= tempB.Numerator;
+        tempA.Denominator *= tempB.Denominator;
 
         tempA.Reduce();
         tempA.Correct();
@@ -150,8 +150,8 @@ public:
         tempA.Improper();
         tempB.Improper();
 
-        tempA.numerator *= tempB.denominator;
-        tempA.denominator *= tempB.numerator;
+        tempA.Numerator *= tempB.Denominator;
+        tempA.Denominator *= tempB.Numerator;
 
         tempA.Reduce();
         tempA.Correct();
