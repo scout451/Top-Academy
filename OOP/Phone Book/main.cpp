@@ -68,9 +68,96 @@ public:
 
 void main()
 {
-	PhoneBook Book;
+	PhoneBook* Book = new PhoneBook;
 
-	Book.SetName("Nikita");
+	Book->SetName("Nikita");
+
+	delete Book;
 
 	system("pause");
 }
+
+
+
+/*class Student
+{
+	char* name;
+
+public:
+	Student() : Student("")
+	{
+		cout << "Call Student()" << endl;
+	}
+
+	Student(const char* n)
+	{
+		cout << "Call Student(const char* n)" << endl;
+
+		const int size = strlen(n) + 1;
+		name = new char[size];
+
+		strcpy_s(name, size, n);
+	}
+
+	~Student()
+	{
+		cout << "Call ~Student()" << endl;
+
+		delete[] name;
+	}
+
+	char* GetName()
+	{
+		return name;
+	}
+
+	void SetName(const char* n)
+	{
+		delete[] name;
+
+		const int size = strlen(n) + 1;
+		name = new char[size];
+
+		strcpy_s(name, size, n);
+	}
+};
+
+void Method()
+{
+	Student s1("qwerty");
+	cout << "s1 created" << endl;
+}
+
+void main()
+{
+	cout << "Start" << endl;
+	Student* s1 = new Student("qwerty");
+	cout << "s1 created" << endl;
+	s1->SetName("asdf");
+	delete s1;
+	cout << "s1 deleted" << endl;
+
+	if (true)
+	{
+		cout << "Start" << endl;
+		Student s1("qwerty");
+		cout << "s1 created" << endl;
+	}
+
+	//cout << "Start" << endl;
+	//Method();
+	//Method();
+
+	//Student* s1 = new Student("qwerty");
+	//delete s1->GetName();
+	//s1->SetName("asdf");
+	//delete s1;
+
+	//Student* arr1 = new Student[2];
+
+	//Student** arr2 = new Student* [2];
+	//for (int i = 0; i < 2; i++)
+	//	arr2[i] = new Student("qwerty");
+
+	system("pause");
+}*/
