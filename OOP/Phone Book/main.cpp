@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <vector>
+#include <Windows.h>
 using namespace std;
 
 class PhoneBook
@@ -9,27 +10,31 @@ class PhoneBook
 	char* Patronymic;
 	int HomeNumber;
 	int WorkNumber;
-	int MobileNumber;
+	long long MobileNumber;
 	char Info;
+
 public:
 
-	PhoneBook() : PhoneBook('\0', '\0', '\0', 0, 0, 0)
+	PhoneBook()
 	{
-		
-	}
-
-	PhoneBook(const char n, const char s, const char p, int home, int work, int mobile)
-	{
-
+		Name = nullptr;
+		Surname = nullptr;
+		Patronymic = nullptr;
+		HomeNumber = 0;
+		WorkNumber = 0;
+		MobileNumber = 0;
+		Info = 0;
 	}
 
 	~PhoneBook()
 	{
 		cout << "call destr" << endl;
 		delete[] Name;
+		delete[] Surname;
+		delete[] Patronymic;
 	}
 
-	const char GetName() { return *Name; }
+	char* GetName() { return Name; }
 	void SetName(const char *n)
 	{
 		delete[] Name;
@@ -40,41 +45,154 @@ public:
 		strcpy_s(Name, size, n);
 	}
 
-	const char GetSurname() { return *Surname; }
-	void SetSurname()
-	{}
+	char* GetSurname() { return Surname; }
+	void SetSurname(const char *s)
+	{
+		delete[] Surname;
 
-	const char GetPatronymic() { return *Patronymic; }
-	void SetPatronymic()
-	{}
+		const int size = strlen(s) + 1;
+		Surname = new char[size];
+
+		strcpy_s(Surname, size, s);
+	}
+
+	char* GetPatronymic() { return Patronymic; }
+	void SetPatronymic(const char* p)
+	{
+		delete[] Patronymic;
+
+		const int size = strlen(p) + 1;
+		Patronymic = new char[size];
+
+		strcpy_s(Patronymic, size, p);
+	}
 
 	int GetHomeNumber() { return HomeNumber; }
-	void SetHomeNumber()
-	{}
+	void SetHomeNumber(int number)
+	{
+		HomeNumber = number;
+	}
 
 	int GetWorkNumber()	{ return WorkNumber; }
-	void SetWorkNumber()
-	{}
+	void SetWorkNumber(int number)
+	{
+		WorkNumber = number;
+	}
 
 	int GetMobileNumber() { return MobileNumber; }
-	void SetMobileNumber()
-	{}
+	void SetMobileNumber(long long number)
+	{
+		MobileNumber = number;
+	}
 
 	const char GetInfo() { return Info; }
-	void SetInfo()
-	{}
-
+	void SetInfo(const char newInfo)
+	{
+		Info = newInfo;
+	}
 };
+
+void AddAbonent(PhoneBook* nameClass, const char*  newName, const char*  newSurname, const char*  newPatronymic,
+	int homeNumber, int workNumber, long long mobileNumber) 
+{
+    nameClass->SetName(newName);
+    nameClass->SetSurname(newSurname);
+    nameClass->SetPatronymic(newPatronymic);
+    nameClass->SetHomeNumber(homeNumber);
+    nameClass->SetMobileNumber(mobileNumber);
+    nameClass->SetWorkNumber(workNumber);
+}
+
+void ShowAbonent(PhoneBook* nameClass)
+{
+	cout << "Имя: " << nameClass->GetName() << endl;
+	cout << "Фамилия: " << nameClass->GetSurname() << endl;
+	cout << "Отчество: " << nameClass->GetPatronymic() << endl;
+	cout << "Домашний номер: " << nameClass->GetHomeNumber() << endl;
+	cout << "Мобильный номер: " << nameClass->GetMobileNumber() << endl;
+	cout << "Рабочий номер: " << nameClass->GetWorkNumber() << endl;
+}
+
+void DeleteAbonent(PhoneBook* Abonent)
+{
+	delete Abonent;
+}
+
+void SearchAbonent()
+{
+
+}
 
 void main()
 {
-	PhoneBook* Book = new PhoneBook;
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 
-	Book->SetName("Nikita");
+	int action, homeNumber, workNumber;
+	const int maxLenght = 25;
+	long long mobileNumber;
+	char newName[maxLenght], newSurname[maxLenght], newPatronymic[maxLenght];
+	vector<PhoneBook*> DataBase;
 
-	delete Book;
+	cout << "Приложение \"Телефонная книга\"" << endl;
+	cout << "1. Добавить нового абонента" << endl;
+	cout << "2. Вывести абонента на экран" << endl;
+	cout << "3. Удалить абонента" << endl;
+	cout << "4. Найти абонента" << endl;
+	cout << "5. Вывести на экран всех абонентов" << endl;
+
+	PhoneBook* Abonent = new PhoneBook;
+
+	while(true)
+	{
+		cout << "Выберите пункт меню: ";
+		cin >> action;
+
+	
+	
+	
+		switch (action)
+		{
+		case 1:
+			cout << "Введите имя: ";
+			cin >> newName;
+			cout << "Введите фамилию: ";
+			cin >> newSurname;
+			cout << "Введите отчество: ";
+			cin >> newPatronymic;
+			cout << "Введите домашний номер: ";
+			cin >> homeNumber;
+			cout << "Введите рабочий номер: ";
+			cin >> workNumber;
+			cout << "Введите мобильный номер: ";
+			cin >> mobileNumber;
+			AddAbonent(Abonent, newName, newSurname, newPatronymic, homeNumber, workNumber, mobileNumber);
+			DataBase.push_back(Abonent);
+			break;
+		case 2:
+			ShowAbonent(Abonent);
+			break;
+		case 3:
+			DeleteAbonent(Abonent);
+			break;
+		}
+	}
+		/*PhoneBook* Abonent = new PhoneBook;
+		DataBase.push_back(Abonent);
+		const char* newName = "Nikita";
+		const char* newSurname = "Zagnetin";
+		const char* newPatronymic = "Yaroslavovich";
+		int homeNumber = 172638;
+		int workNumber = 471929;
+		long long mobileNumber = 79127462839;
+
+		AddAbonent(Abonent ,newName, newSurname, newPatronymic, homeNumber, workNumber, mobileNumber);
+		cout << Abonent->GetName() << endl;
+		Abonent->SetName("Woody");
+		cout << Abonent->GetName() << endl;;*/
 
 	system("pause");
+
 }
 
 
