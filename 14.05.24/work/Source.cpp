@@ -12,6 +12,7 @@ class Array
 public:
 	Array() 
 	{
+		size = 0;
 		arr = nullptr;
 	}
 
@@ -48,7 +49,6 @@ public:
 	{
 		if (arr != nullptr)
 			delete[] arr;
-		arr = nullptr;
 	}
 
 	int Size() 
@@ -113,7 +113,7 @@ public:
 
 	string ToString() 
 	{
-		string arr[10];
+		string arr = to_string(arr[0]);
 		for (int i = 0; i < size; i++)
 		{
 			char j = this->arr[i];
