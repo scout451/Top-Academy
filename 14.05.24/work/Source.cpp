@@ -4,40 +4,55 @@
 #include <span>
 
 using namespace std;
-
+/*
 class Array
 {
-	int* arr;
 	int size;
+	int* arr;
+
+	static void FixSize(int& size)
+	{
+		if (size < 0)
+			size = 0;
+	}
+
+	static int GetRandomValue(int startRange, int endRange)
+	{
+		return rand() % (endRange - startRange + 1) + startRange;
+	}
 
 public:
-	Array() 
+	Array()
 	{
 		size = 0;
 		arr = nullptr;
 	}
 
-	Array(int size) : Array(size, 0)
+	explicit Array(int size) : Array(size, 0)
 	{
 	}
 
-	Array(int size, int value) 
+	Array(int size, int value)
 	{
+		FixSize(size);
+
 		this->size = size;
 		arr = new int[size];
 		for (int i = 0; i < size; i++)
 			arr[i] = value;
 	}
 
-	Array(int* arr, int size) 
+	Array(int* arr, int size)
 	{
+		FixSize(size);
+
 		this->size = size;
 		this->arr = new int[size];
 		for (int i = 0; i < size; i++)
 			this->arr[i] = arr[i];
 	}
 
-	Array(const Array& other) 
+	Array(const Array& other)
 	{
 		size = other.size;
 		arr = new int[size];
@@ -45,40 +60,49 @@ public:
 			arr[i] = other.arr[i];
 	}
 
-	~Array() 
+	~Array()
 	{
 		if (arr != nullptr)
 			delete[] arr;
 	}
 
-	int Size() 
+	int Size() const
 	{
 		return size;
 	}
 
-	int& At(int index)
+	int& At(const int index)
 	{
+		//size = 5; // no error
 		return arr[index];
 	}
 
-	bool IsEmpty()
+	int At(const int index) const
+	{
+		//size = 5; // error
+		return arr[index];
+	}
+
+	bool IsEmpty() const
 	{
 		return size == 0;
 	}
 
 	void Clear()
 	{
+		size = 0;
+
 		if (arr != nullptr)
-		{
 			delete[] arr;
-			this->size = 0;
-			arr = nullptr;
-		}
+
+		arr = nullptr;
 	}
 
 	void Resize(int size)
 	{
-		int* newArr = new int[size];
+		FixSize(size);
+
+		int* newArr = size == 0 ? nullptr : new int[size];
 		int minSize = min(this->size, size);
 		for (int i = 0; i < minSize; i++)
 			newArr[i] = arr[i];
@@ -96,14 +120,12 @@ public:
 	{
 		if (IsEmpty())
 			return;
-		
-		for(int i = 0; i < size; i++)
-			arr[i] = rand() % (endRange - startRange + 1) + startRange;
+
+		for (int i = 0; i < size; i++)
+			arr[i] = GetRandomValue(startRange, endRange);
 	}
 
-	//asc - возрастание
-	//desc - убывание
-	void Sort(bool desc = false) 
+	void Sort(bool desc = false)
 	{
 		if (IsEmpty())
 			return;
@@ -119,13 +141,16 @@ public:
 		swap(arr[firstIndex], arr[secondIndex]);
 	}
 
-	void Concatinate(const Array& other)
+	void Concatenate(const Array& other)
 	{
-		int newSize = other.size + this->size;
+		if (other.IsEmpty())
+			return;
+
+		int newSize = size + other.size;
 		int* newArr = new int[newSize];
-		for (int i = 0; i < this->size; i++)
-			newArr[i] = this->arr[i];
-		for (int i = 0; i < newSize; i++)
+		for (int i = 0; i < size; i++)
+			newArr[i] = arr[i];
+		for (int i = 0; i < other.size; i++)
 			newArr[size + i] = other.arr[i];
 
 		if (arr != nullptr)
@@ -139,13 +164,10 @@ public:
 	{
 		int newSize = size + 1;
 		int* newArr = new int[newSize];
-		
 		for (int i = 0; i < index; i++)
 			newArr[i] = arr[i];
-
 		newArr[index] = value;
-
-		for(int i = index; i < size; i++)
+		for (int i = index; i < size; i++)
 			newArr[i + 1] = arr[i];
 
 		if (arr != nullptr)
@@ -159,7 +181,7 @@ public:
 	{
 		Insert(0, value);
 	}
-	
+
 	void InsertBack(int value)
 	{
 		Insert(size, value);
@@ -167,18 +189,23 @@ public:
 
 	void Remove(int index)
 	{
+		if (size <= 1)
+		{
+			Clear();
+			return;
+		}
+
 		int newSize = size - 1;
 		int* newArr = new int[newSize];
 		for (int i = 0; i < index; i++)
 			newArr[i] = arr[i];
-
 		for (int i = index; i < newSize; i++)
 			newArr[i] = arr[i + 1];
 
 		if (arr != nullptr)
 			delete[] arr;
 
-		size = newSize;
+		this->size = newSize;
 		arr = newArr;
 	}
 
@@ -189,7 +216,7 @@ public:
 
 	void RemoveBack()
 	{
-		Remove(size);
+		Remove(size - 1);
 	}
 
 	void Replace(int oldValue, int newValue)
@@ -199,14 +226,14 @@ public:
 				arr[i] = newValue;
 	}
 
-	int GetAverage() 
+	double GetAverage() const
 	{
 		if (IsEmpty())
 			return 0;
 
 		int sum = 0;
-		for (int i = 0; i < size; i++)
-			sum += arr[i];
+		for (int x : span(arr, arr + size))
+			sum += x;
 
 		return (double)sum / size;
 	}
@@ -214,61 +241,80 @@ public:
 	int GetSum() const
 	{
 		int sum = 0;
-		
-		for (int i = 0; i < size; i++)
-			sum += arr[i];
+		for (int x : span(arr, arr + size))
+			sum += x;
 
 		return sum;
 	}
 
-	int GetMin() 
+	int GetMin() const
 	{
 		if (IsEmpty())
 			return 0;
 
 		int min = arr[0];
-		for (int i = 0; i < size; i++)
-			if (arr[i] < min)
-				min = arr[i];
+		for (int x : span(arr, arr + size))
+			if (x < min)
+				min = x;
 
 		return min;
 	}
 
-	int GetMax()
+	int GetMax() const
 	{
 		if (IsEmpty())
 			return 0;
 
 		int max = arr[0];
-		for (int i = 0; i < size; i++)
-			if (arr[i] > max)
-				max = arr[i];
+		for (int x : span(arr, arr + size))
+			if (x > max)
+				max = x;
 
 		return max;
 	}
 
-	int Find(int value) // return index or -1
+	int Find(int value) const
 	{
 		for (int i = 0; i < size; i++)
 			if (arr[i] == value)
 				return i;
+
 		return -1;
 	}
 
-	int FindLast(int value) // return index or -1
+	int FindLast(int value) const
 	{
-		for (int i = size; i > 0; i--)
+		for (int i = size - 1; i >= 0; i--)
 			if (arr[i] == value)
 				return i;
+
 		return -1;
 	}
 
-	string ToString() 
+	Array operator+(int value)
+	{
+		Array temp(*this);
+
+		temp.Resize(temp.Size() + value);
+
+		return temp;
+	}
+
+	Array operator+(const Array& other)
+	{
+		Array temp(*this);
+
+		temp.Concatenate(other);
+
+		return temp;
+	}
+
+	string ToString() const
 	{
 		return ToString(", ");
 	}
 
-	string ToString(string separator) 
+	string ToString(string separator) const
 	{
 		if (IsEmpty())
 			return "";
@@ -313,7 +359,7 @@ void main()
 	cout << endl << "Is concatinate test" << endl;
 
 	cout << "arr1 + arr2 = ";
-	arr2.Concatinate(arr3);
+	arr2.Concatenate(arr3);
 	arr2.ToString();
 
 	cout << endl << "Is clear test" << endl;
@@ -352,9 +398,6 @@ void main()
 	arr4.Replace(6, 8);
 	cout << "arr4 = [" << arr4.ToString() << "] with size = " << arr4.Size() << endl;
 
-	cout << endl << "Is sum back test" << endl;
-	cout << "arr4 sum = " << arr4.GetSum() << endl;
-
 	cout << endl << "Resize test" << endl;
 
 	cout << "arr2 = [" << arr2.ToString() << "] with size = " << arr2.Size() << endl;
@@ -380,9 +423,220 @@ void main()
 	cout << "arr2 = [" << arr2.ToString() << "] GetAverage = " << arr2.GetAverage() << endl;
 	cout << "arr2 = [" << arr2.ToString() << "] GetMin = " << arr2.GetMin() << endl;
 	cout << "arr2 = [" << arr2.ToString() << "] GetMax = " << arr2.GetMax() << endl;
+	cout << "Is sum arr4 test = " << arr4.GetSum() << endl;
 
 	cout << "arr2 with other separator = " << arr2.ToString(" # ") << endl;
 
+	Array arr7 = arr3 + arr5;
+	cout << "arr7 = [" << arr7.ToString() << "] with size = " << arr7.Size() << endl;
+	Array arr8 = arr7 + 3;
+	cout << "arr8 = [" << arr8.ToString() << "] with size = " << arr8.Size() << endl;
+
+
+
 	system("pause");
 }
+*/
 
+class Point
+{
+	int x;
+	int y;
+
+public:
+	
+	int GetX() { return x;	}
+	void SetX(int value) { x = value; }
+
+	int GetY() { return y; }
+	void SetY(int value) { y = value; }
+
+	Point(int a, int b)
+	{
+		x = a;
+		y = b;
+	}
+
+	void Print()
+	{
+		cout << x << " " << y << endl;
+	}
+
+	// +
+	Point operator+(const Point other) const
+	{
+		Point temp(*this);
+
+		temp.x = x + other.x;
+		temp.y = y + other.y;
+		
+		return temp;
+	}
+	Point operator+(const int value) const
+	{
+		Point temp(*this);
+
+		temp.x = x + value;
+		temp.y = y + value;
+
+		return temp;
+	}
+
+	// -
+	Point operator-(const Point other) const
+	{
+		Point temp(*this);
+
+		temp.x = other.x - x;
+		temp.y = other.y - y;
+
+		return temp;
+	}
+	Point operator-(const int value) const
+	{
+		Point temp(*this);
+
+		temp.x = x - value;
+		temp.y = y - value;
+
+		return temp;
+	}
+
+	// *
+	Point operator*(const Point other) const
+	{
+		Point temp(*this);
+
+		temp.x = other.x * x;
+		temp.y = other.y * y;
+
+		return temp;
+	}
+	Point operator*(const int value) const
+	{
+		Point temp(*this);
+
+		temp.x = x * value;
+		temp.y = y * value;
+
+		return temp;
+	}
+
+	// /
+	Point operator/(const Point other) const
+	{
+		//return Point(other.x / x, other.y / y);
+
+		Point temp(*this);
+
+		temp.x = other.x / x;
+		temp.y = other.y / y;
+
+		return temp;
+	}
+	Point operator/(const int value) const
+	{
+		Point temp(*this);
+
+		temp.x = x / value;
+		temp.y = y / value;
+
+		return temp;
+	}
+
+	// ++
+	Point operator++()
+	{
+		++x;
+		++y;
+
+		return (*this);
+	}
+	Point operator++(int)
+	{
+		Point temp(*this);
+
+		x++;
+		y++;
+
+		return temp;
+	}
+
+	// --
+	Point operator--()
+	{
+		--x;
+		--y;
+
+		return (*this);
+	}
+	Point operator--(int)
+	{
+		Point temp(*this);
+
+		temp.x--;
+		temp.y--;
+
+		return temp;
+	}
+};
+
+Point operator+(const int value, Point other) 
+{
+	Point temp(other);
+
+	temp.SetX(other.GetX() + value);
+	temp.SetY(other.GetY() + value);
+
+	return temp;
+}
+
+Point operator-(const int value, Point other)
+{
+	Point temp(other);
+
+	temp.SetX(other.GetX() - value);
+	temp.SetY(other.GetY() - value);
+
+	return temp;
+}
+
+Point operator*(const int value, Point other)
+{
+	Point temp(other);
+
+	temp.SetX(other.GetX() * value);
+	temp.SetY(other.GetY() * value);
+
+	return temp;
+}
+
+Point operator/(const int value, Point other)
+{
+	Point temp(other);
+
+	temp.SetX(other.GetX() / value);
+	temp.SetY(other.GetY() / value);
+
+	return temp;
+}
+
+void main()
+{
+	Point a(1, 2);
+	Point b(1, 2);
+	Point c = a + b;
+	c.Print();
+	++c;
+	c.Print();
+	c++;
+	c.Print();
+	c = c / b;
+	c.Print();
+	--c;
+	c.Print();
+	c--;
+	c.Print();
+
+	system("pause");
+}
