@@ -52,15 +52,40 @@ public:
         other.str = nullptr;
         return *this;
     }
+
+    char& operator[](int index)
+    {
+        return str[index];
+    }
+
+    const char& operator[](int index) const
+    {
+        return str[index];
+    }
+
+    int operator()(int symbol)
+    {
+        int size = strlen(str);
+        for (int i = 0; i < size; i++)
+            if (str[i] == symbol)
+                return i;
+        return -1;
+    }
+
+    operator int() const
+    {
+        return strlen(str);
+    }
     
     const char* Get() const { return str; }
-
     void Set(const char* newStr) 
     {
         delete[] str;
         str = new char[strlen(newStr) + 1];
         strcpy_s(str, strlen(newStr) + 1, newStr);
     }
+
+    
 };
 
 void main() 
