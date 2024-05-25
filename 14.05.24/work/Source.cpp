@@ -4,7 +4,7 @@
 #include <span>
 
 using namespace std;
-/*
+
 class Array
 {
 	int size;
@@ -58,6 +58,40 @@ public:
 		arr = new int[size];
 		for (int i = 0; i < size; i++)
 			arr[i] = other.arr[i];
+	}
+
+	Array(Array&& other)
+	{
+		size = other.size;
+		arr = other.arr;
+		other.arr = nullptr;
+		other.size = 0;
+	}
+
+	Array operator=(const Array& other)
+	{
+		if (this == &other)
+			return *this;
+
+		delete[] arr;
+		size = other.size;
+		arr = new int[size];
+		for (int i = 0; i < size; i++)
+			arr[i] = other.arr[i];
+		return *this;
+	}
+
+	Array operator=(Array&& other)
+	{
+		if (this == &other)
+			return *this;
+
+		delete[] arr;
+		size = other.size;
+		arr = other.arr;
+		other.arr = nullptr;
+		other.size = 0;
+		return *this;
 	}
 
 	~Array()
@@ -436,8 +470,9 @@ void main()
 
 	system("pause");
 }
-*/
 
+
+/*
 class Point
 {
 	int x;
@@ -639,4 +674,4 @@ void main()
 	c.Print();
 
 	system("pause");
-}
+}*/
