@@ -1,10 +1,13 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <Windows.h>
+#include <stdexcept>
 #include <string>
 
 using namespace std;
 
+//Встреча 11
 //Задача 1
 /*
 template <typename TValue>
@@ -94,305 +97,305 @@ void main()
     system("pause");
 }*/
 
-
-//Задача 2
+//Встреча 12
+//Задача 1
 
 //template <typename TValue>
 //class Matrix
 //{
+//private:
 //    TValue** newMatrix;
-//    int rows;
-//    int columns;
+//    int rows, columns;
 //
 //    void Create()
-//    {
+//	{
 //        newMatrix = new TValue * [rows];
 //        for (int i = 0; i < rows; i++)
 //            newMatrix[i] = new TValue[columns];
 //    }
 //
+//    void Delete() {
+//        for (int i = 0; i < rows; i++)
+//            delete[] newMatrix[i];
+//        delete[] newMatrix;
+//    }
+//
 //public:
-//    Matrix() : rows(0), columns(0), newMatrix(nullptr) {};
+//    Matrix(int rows, int columns) : rows(rows), columns(columns)
+//	{
+//        Create();
+//    }
 //
-//    Matrix(int r) : rows(r), columns(r) { Create(); };
+//    Matrix(const Matrix<TValue>& other) : rows(other.rows), columns(other.columns)
+//	{
+//        Create();
+//        for (int i = 0; i < rows; i++)
+//            for (int j = 0; j < columns; j++)
+//                newMatrix[i][j] = other.newMatrix[i][j];
+//    }
 //
-//    Matrix(int r, int c) : rows(r), columns(c) { Create(); }
+//    Matrix(const int value) : Matrix(value, value) {};
+//
+//    Matrix& operator=(const Matrix<TValue>& other)
+//	{
+//        if (this != &other) 
+//        {
+//            Delete();
+//            rows = other.rows;
+//            columns = other.columns;
+//            Create();
+//            for (int i = 0; i < rows; i++)
+//                for (int j = 0; j < columns; j++)
+//                    newMatrix[i][j] = other.newMatrix[i][j];
+//        }
+//        return *this;
+//    }
 //
 //    ~Matrix()
-//    {
+//	{
+//        Delete();
+//    }
+//
+//    void FillFromKeyboard()
+//	{
+//        cout << "Введите элемент:\n";
 //        for (int i = 0; i < rows; i++)
-//            delete[] newMatrix[i];
-//        delete[] newMatrix;
-//    }
-//
-//    Matrix(const Matrix& other)
-//    {
-//        rows = other.rows;
-//        columns = other.columns;
-//        Create();
-//        for (int i = 0; i < rows; i++)
-//            for (int j = 0; j < columns; j++)
-//                newMatrix[i][j] = other[i][j];
-//    }
-//
-//    Matrix operator=(const Matrix& other) const
-//    {
-//        if (this == other)
-//            return *this;
-//
-//        for (int i = 0; i < rows; i++)
-//            delete[] newMatrix[i];
-//        delete[] newMatrix;
-//
-//        rows = other.rows;
-//        columns = other.columns;
-//        Create();
-//        for (int i = 0; i < rows; i++)
-//            for (int j = 0; j < columns; j++)
-//                newMatrix[i][j] = other[i][j];
-//
-//        return *this;
-//    }
-//
-//    Matrix(Matrix&& other)
-//    {
-//        newMatrix = other.newMatrix;
-//        rows = other.rows;
-//        columns = other.columns;
-//
-//        other.newMatrix = nullptr;
-//        other.rows = 0;
-//        other.columns = 0;
-//    }
-//
-//    Matrix operator=(Matrix&& other)
-//    {
-//        if (this == other)
-//            return *this;
-//
-//        for (int i = 0; i < rows; i++)
-//            delete[] newMatrix[i];
-//        delete[] newMatrix;
-//
-//        newMatrix = other.newMatrix;
-//        rows = other.rows;
-//        columns = other.columns;
-//
-//        other.newMatrix = nullptr;
-//        other.rows = 0;
-//        other.columns = 0;
-//
-//        return *this;
-//    }
-//
-//    void SetValue(int r, int c, const TValue& value)
-//    {
-//    	newMatrix[r][c] = value;
-//    }
-//
-//    TValue GetValue(int r, int c) const
-//    {
-//    	return newMatrix[r][c];
-//    }
-//
-//    void FillManual()
-//    {
-//    	cout << "Enter elements of the matrix:" << endl;
-//    	for (int i = 0; i < rows; i++) 
-//        
 //            for (int j = 0; j < columns; j++)
 //                cin >> newMatrix[i][j];
 //    }
 //
-//    void Print() 
-//    {
+//    void FillWithRandomValues()
+//	{
 //        for (int i = 0; i < rows; i++)
+//            for (int j = 0; j < columns; j++)
+//                newMatrix[i][j] = rand() % 100;
+//    }
+//
+//    void Print() const
+//	{
+//        for (int i = 0; i < rows; i++) 
 //        {
 //            for (int j = 0; j < columns; j++)
-//            {
 //                cout << newMatrix[i][j] << " ";
-//            }
 //            cout << endl;
 //        }
+//    }
+//
+//    TValue MaxElement() const
+//	{
+//        TValue max = newMatrix[0][0];
+//        for (int i = 0; i < rows; i++)
+//            for (int j = 0; j < columns; j++)
+//                if (newMatrix[i][j] > max)
+//                    max = newMatrix[i][j];
+//        return max;
+//    }
+//
+//    TValue MinElement() const
+//	{
+//        TValue min = newMatrix[0][0];
+//        for (int i = 0; i < rows; i++)
+//            for (int j = 0; j < columns; j++)
+//                if (newMatrix[i][j] < min)
+//                    min = newMatrix[i][j];
+//        return min;
+//    }
+//
+//    Matrix<TValue> operator+(const Matrix<TValue>& other) const
+//	{
+//        if (rows != other.rows || columns != other.columns) 
+//        {
+//            return -1;
+//        }
+//        Matrix<TValue> result(rows, columns);
+//        for (int i = 0; i < rows; i++)
+//            for (int j = 0; j < columns; j++)
+//                result.newMatrix[i][j] = newMatrix[i][j] + other.newMatrix[i][j];
+//        return result;
+//    }
+//
+//    Matrix<TValue> operator-(const Matrix<TValue>& other) const
+//	{
+//        if (rows != other.rows || columns != other.columns) 
+//        {
+//           return -1;
+//        }
+//        Matrix<TValue> result(rows, columns);
+//        for (int i = 0; i < rows; i++)
+//            for (int j = 0; j < columns; j++)
+//                result.newMatrix[i][j] = newMatrix[i][j] - other.newMatrix[i][j];
+//        return result;
+//    }
+//
+//    Matrix<TValue> operator*(const Matrix<TValue>& other) const
+//	{
+//        if (columns != other.rows) 
+//        {
+//            return -1;
+//        }
+//        Matrix<TValue> result(rows, other.columns);
+//        for (int i = 0; i < rows; i++) 
+//            for (int j = 0; j < other.columns; j++) 
+//            {
+//                result.newMatrix[i][j] = 0;
+//                for (int k = 0; k < columns; k++)
+//                    result.newMatrix[i][j] += newMatrix[i][k] * other.newMatrix[k][j];
+//            }
+//        return result;
+//    }
+//
+//    Matrix<TValue> operator/(const Matrix<TValue>& other) const
+//	{
+//        Matrix<TValue> inverse = other.Inverse();
+//        return (*this) * inverse;
+//    }
+//
+//    Matrix<TValue> Inverse() const
+//	{
+//        if (rows != columns) 
+//        {
+//            return -1;
+//        }
+//
+//        int n = rows;
+//        Matrix<TValue> result(n, n);
+//        Matrix<TValue> augmented(n, 2 * n);
+//
+//        for (int i = 0; i < n; ++i) 
+//            for (int j = 0; j < n; ++j) 
+//            {
+//                augmented.newMatrix[i][j] = newMatrix[i][j];
+//                augmented.newMatrix[i][j + n] = (i == j) ? 1 : 0;
+//            }
+//
+//        for (int i = 0; i < n; ++i) 
+//        {
+//            int maxRow = i;
+//            for (int k = i + 1; k < n; ++k) 
+//                if (fabs(augmented.newMatrix[k][i]) > fabs(augmented.newMatrix[maxRow][i])) 
+//                    maxRow = k;
+//
+//            for (int k = 0; k < 2 * n; ++k) 
+//            {
+//                swap(augmented.newMatrix[maxRow][k], augmented.newMatrix[i][k]);
+//            }
+//
+//            for (int k = i + 1; k < n; ++k) 
+//            {
+//                TValue factor = augmented.newMatrix[k][i] / augmented.newMatrix[i][i];
+//                for (int j = i; j < 2 * n; ++j)
+//                    augmented.newMatrix[k][j] -= augmented.newMatrix[i][j] * factor;
+//            }
+//        }
+//
+//        for (int i = n - 1; i >= 0; --i) 
+//        {
+//            for (int j = n; j < 2 * n; ++j) 
+//                augmented.newMatrix[i][j] /= augmented.newMatrix[i][i];
+//            for (int k = 0; k < i; ++k) 
+//                for (int j = n; j < 2 * n; ++j) 
+//                    augmented.newMatrix[k][j] -= augmented.newMatrix[i][j] * augmented.newMatrix[k][i];
+//        }
+//
+//        for (int i = 0; i < n; ++i) 
+//            for (int j = 0; j < n; ++j) 
+//                result.newMatrix[i][j] = augmented.newMatrix[i][j + n];
+//
+//        return result;
 //    }
 //};
 //
 //void main()
 //{
-//    setlocale(LC_ALL, "");
-//    Matrix<int> mat(3, 3);
+//    SetConsoleCP(1251);
+//    SetConsoleOutputCP(1251);
+//    srand(time(nullptr));
 //
-//    // Заполнение матрицы вручную
-//    mat.FillManual();
+//	Matrix<double> mat1(3, 3);
+//	mat1.FillWithRandomValues();
+//	cout << "Матрица 1:\n";
+//	mat1.Print();
 //
-//    // Вывод матрицы
-//    mat.Print();
+//	Matrix<double> mat2(3, 3);
+//	mat2.FillWithRandomValues();
+//	cout << "Матрица 2:\n";
+//	mat2.Print();
+//
+//	Matrix<double> sum = mat1 + mat2;
+//	cout << "Сумма матриц:\n";
+//	sum.Print();
+//
+//	Matrix<double> diff = mat1 - mat2;
+//	cout << "Разность матриц:\n";
+//	diff.Print();
+//
+//	Matrix<double> mult = mat1 * mat2;
+//	cout << "Произведение матриц:\n";
+//	mult.Print();
+//
+//	Matrix<double> div = mat1 / mat2;
+//	cout << "Частное матриц:\n";
+//	div.Print();
+//
+//	cout << "Максимальный элемент в матрице 1: " << mat1.MaxElement() << endl;
+//	cout << "Минимальный элемент в матрице 1: " << mat1.MinElement() << endl;
+//
+//	Matrix<double> inverse = mat2.Inverse();
+//	cout << "Обратная матрица ко 2-й матрице:\n";
+//	inverse.Print();
 //
 //    system("pause");
 //}
 
+//Встреча 13
+//Задача 1
 
-template <typename TValue>
-class Matrix
+void checkBrackets(const string& input)
 {
-private:
-    TValue** newMatrix;
-    int rows, columns;
+    vector<pair<char, int>> Brackets;
+    int vectorSize = -1;
 
-    void Create()
-	{
-        newMatrix = new TValue* [rows];
-        for (int i = 0; i < rows; i++) 
-            newMatrix[i] = new TValue[columns];
-    }
-
-    void Delete()
-	{
-        for (int i = 0; i < rows; i++)
-            delete[] newMatrix[i];
-        delete[] newMatrix;
-    }
-
-public:
-    Matrix(int rows, int columns) : rows(rows), columns(columns)
-	{
-        Create();
-    }
-
-    ~Matrix()
-	{
-        Delete();
-    }
-
-    void FillFromKeyboard()
-	{
-        cout << "Введите элемент:\n";
-        for (int i = 0; i < rows; i++) 
-            for (int j = 0; j < columns; j++) 
-                cin >> newMatrix[i][j];
-    }
-
-    void FillWithRandomValues()
-	{
-        srand(time(nullptr));
-        for (int i = 0; i < rows; i++) 
-            for (int j = 0; j < columns; j++) 
-                newMatrix[i][j] = rand() % 100;
-	}
-
-    void Print() const
-	{
-        for (int i = 0; i < rows; i++) 
+    for (int i = 0; i < input.length(); i++) 
+    {
+        char currentChar = input[i];
+        if (currentChar == '(' || currentChar == '{' || currentChar == '[') 
         {
-            for (int j = 0; j < columns; j++)
-                cout << newMatrix[i][j] << " ";
-            cout << endl;
+            Brackets.push_back(make_pair(currentChar, i));
+            vectorSize++;
+        }
+        else if (currentChar == ')' || currentChar == '}' || currentChar == ']') 
+        {
+            if (vectorSize == -1 || (currentChar == ')' && Brackets[vectorSize].first != '(') ||
+                (currentChar == '}' && Brackets[vectorSize].first != '{') ||
+                (currentChar == ']' && Brackets[vectorSize].first != '[')) 
+            {
+                cout << "Ошибка! Некорректная расстановка скобок." << endl;
+                cout << input.substr(0, i + 1) << endl;
+            }
+            Brackets.pop_back();
+            vectorSize--;
         }
     }
 
-    TValue MaxElement() const
-	{
-        TValue max = newMatrix[0][0];
-        for (int i = 0; i < rows; i++) 
-            for (int j = 0; j < columns; j++)
-                if (newMatrix[i][j] > max) 
-                    max = newMatrix[i][j];
-
-        return max;
+    if (!Brackets.empty()) 
+    {
+        cout << "Ошибка! Некорректная расстановка скобок." << endl;
+        cout << input.substr(0, input.length()) << endl;
     }
 
-    TValue MinElement() const
-	{
-        TValue min = newMatrix[0][0];
-        for (int i = 0; i < rows; i++) 
-            for (int j = 0; j < columns; j++) 
-                if (newMatrix[i][j] < min) 
-                    min = newMatrix[i][j];
-
-        return min;
-    }
-
-    Matrix<TValue> operator+(const Matrix<TValue>& other) const
-	{
-        Matrix<TValue> result(rows, columns);
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                result.newMatrix[i][j] = newMatrix[i][j] + other.newMatrix[i][j];
-
-        return result;
-    }
-
-    Matrix<TValue> operator-(const Matrix<TValue>& other) 
-	{
-        Matrix<TValue> result(rows, columns);
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++)
-                result.newMatrix[i][j] = newMatrix[i][j] - other.newMatrix[i][j];
-
-            return result;
-	}
-
-	Matrix<TValue> operator*(const Matrix<TValue>&other) const
-	{
-		Matrix<TValue> result(rows, other.columns);
-		for (int i = 0; i < rows; i++)
-			for (int j = 0; j < other.columns; j++) 
-			{
-				result.newMatrix[i][j] = 0;
-				for (int k = 0; k < columns; ++k)
-					result.newMatrix[i][j] += newMatrix[i][k] * other.newMatrix[k][j];
-			}
-
-		return result;
-	}
-
-    Matrix<TValue> operator/(const TValue& scalar) const
-	{
-        Matrix<TValue> result(rows, columns);
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < columns; j++) 
-                result.newMatrix[i][j] = newMatrix[i][j] / scalar;
-
-        return result;
-    }
-};
+    cout << "Скобки расставлены корректно." << endl;
+}
 
 void main()
 {
-    setlocale(LC_ALL, "");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    string inputString;
+    cout << "Введите строку: ";
+    getline(cin, inputString);
 
-    Matrix<int> mat1(3, 3);
-    mat1.FillWithRandomValues();
-    cout << "Матрица 1:\n";
-    mat1.Print();
-
-
-    Matrix<int> mat2(3, 3);
-    mat2.FillFromKeyboard();
-    cout << "Matrix 2:\n";
-    mat2.Print();
-
-    Matrix<int> sum = mat1 + mat2;
-    cout << "Сумма матриц:\n";
-    sum.Print();
-
-    Matrix<int> diff = mat1 - mat2;
-    cout << "Вычитание матриц:\n";
-    diff.Print();
-
-    Matrix<int> div = mat1 / 3;
-    cout << "Деление матриц:\n";
-    div.Print();
-
-    Matrix<int> mult = mat1 * mat2;
-    cout << "Умножение матриц:\n";
-    mult.Print();
-
-
-
-    // Поиск максимального и минимального элемента в матрице
-    cout << "Максимальный элемент в матрице 1: " << mat1.MaxElement() << endl;
-    cout << "Минимальный элемент в матрице 1: " << mat1.MinElement() << endl;
+    checkBrackets(inputString);
 
     system("pause");
 }
+
