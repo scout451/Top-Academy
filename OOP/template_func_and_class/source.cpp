@@ -352,22 +352,22 @@ void main()
 
 void checkBrackets(const string& input)
 {
-    vector<pair<char, int>> Brackets;
+    vector<char> Brackets;
     int vectorSize = -1;
 
-    for (int i = 0; i < input.length(); i++) 
+    for (int i = 0; i < input.length(); i++)
     {
         char currentChar = input[i];
         if (currentChar == '(' || currentChar == '{' || currentChar == '[') 
         {
-            Brackets.push_back(make_pair(currentChar, i));
+            Brackets.push_back(currentChar);
             vectorSize++;
         }
         else if (currentChar == ')' || currentChar == '}' || currentChar == ']') 
         {
-            if (vectorSize == -1 || (currentChar == ')' && Brackets[vectorSize].first != '(') ||
-                (currentChar == '}' && Brackets[vectorSize].first != '{') ||
-                (currentChar == ']' && Brackets[vectorSize].first != '[')) 
+            if (vectorSize == -1 || (currentChar == ')' && Brackets[vectorSize] != '(') ||
+                (currentChar == '}' && Brackets[vectorSize] != '{') ||
+                (currentChar == ']' && Brackets[vectorSize] != '[')) 
             {
                 cout << "Ошибка! Некорректная расстановка скобок." << endl;
                 cout << input.substr(0, i + 1) << endl;
@@ -377,10 +377,11 @@ void checkBrackets(const string& input)
         }
     }
 
-    if (!Brackets.empty()) 
+    if (!Brackets.empty())
     {
         cout << "Ошибка! Некорректная расстановка скобок." << endl;
         cout << input.substr(0, input.length()) << endl;
+        return;
     }
 
     cout << "Скобки расставлены корректно." << endl;
