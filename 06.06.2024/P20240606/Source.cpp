@@ -133,132 +133,65 @@ public:
 
 
 
-class List
+template <typename TValue>
+class LinkedList
 {
-	struct Node
+protected:
+	struct LinkedListNode
 	{
-		int Value;
-		Node* Next;
-		Node* Prev;
+		TValue Value;
+		LinkedListNode* Next;
+
+		LinkedListNode(const TValue& value, LinkedListNode* next)
+		{
+			Value = value;
+			Next = next;
+		}
 	};
-	Node* head;
-	Node* tail;
-public:
-	List()
-	{
-		head = nullptr;
-		tail = nullptr;
-	}
 
-	virtual void Clear()
-	{
-		while (head != nullptr)
-		{
-			Node* forDelete = head;
-			head = head->Next;
-			delete forDelete;
-		}
-	}
-
-	virtual void Push(int value)
-	{
-		if (head == nullptr)
-		{
-			head = new Node();
-			head->Value = value;
-			head->Next = nullptr;
-		}
-		else
-		{
-			StackNode* newNode = new StackNode();
-			newNode->Value = value;
-			newNode->Next = head;
-			head = newNode;
-		}
-	}
-
-	virtual int Pop()
-	{
-		int result = head->Value;
-		StackNode* forDelete = head;
-		head = head->Next;
-
-		delete forDelete;
-		return result;
-	}
-
-	virtual void ForEach(const function<void(int)> action) const
-	{
-		StackNode* current = head;
-		while (current != nullptr)
-		{
-			action(current->Value);
-			current = current->Next;
-		}
-	}
-
-};
-
-class Stack : public List
-{
-	struct StackNode
-	{
-		int Value;
-		StackNode* Next;
-	};
-	StackNode* head;
+	LinkedListNode* head;
+	LinkedListNode* tail;
 
 public:
-	Stack()
+	LinkedList()
 	{
-		head = nullptr;
+		head = tail = nullptr;
 	}
 
-	~Stack()
+	~LinkedList()
 	{
 		Clear();
 	}
 
-	virtual void Clear()
+	bool IsEmpty() const
+	{
+		return head == nullptr;
+	}
+
+	void Clear()
 	{
 		while (head != nullptr)
 		{
-			StackNode* forDelete = head;
+			const LinkedListNode* forDelete = head;
 			head = head->Next;
 			delete forDelete;
 		}
+
+		tail = nullptr;
 	}
 
-	virtual void Push(int value)
+	virtual void Push(const TValue& value)
 	{
-		if (head == nullptr)
-		{
-			head = new StackNode();
-			head->Value = value;
-			head->Next = nullptr;
-		}
-		else
-		{
-			StackNode* newNode = new StackNode();
-			newNode->Value = value;
-			newNode->Next = head;
-			head = newNode;
-		}
 	}
 
-	virtual int Pop()
+	virtual TValue Pop()
 	{
-		int result = head->Value;
-		StackNode* forDelete = head;
-		head = head->Next;
-
-		delete forDelete;
-		return result;
+		return 0;
 	}
 
-	virtual void ForEach(const function<void(int)> action) const
+	void ForEach(const function<void(TValue)> action) const
 	{
-		StackNode* current = head;
+		LinkedListNode* current = head;
 		while (current != nullptr)
 		{
 			action(current->Value);
@@ -267,79 +200,73 @@ public:
 	}
 };
 
-class Queue : public List
+template <typename TValue>
+class Stack : public LinkedList<TValue>
 {
-	struct QueueNode
-	{
-		int Value;
-		QueueNode* Next;
-	};
-
-	QueueNode* head;
-	QueueNode* tail;
-
 public:
-	Queue()
+	void Push(const TValue& value) override
 	{
-		head = nullptr;
-		tail = nullptr;
-	}
-
-	~Queue()
-	{
-		Clear();
-	}
-
-	virtual void Clear()
-	{
-		while (head != nullptr)
-		{
-			QueueNode* forDelete = head;
-			head = head->Next;
-			delete forDelete;
-		}
-		tail = nullptr;
-	}
-
-	virtual void Push(int value)
-	{
-		if (head == nullptr)
-		{
-			head = tail = new QueueNode();
-			tail->Value = value;
-			tail->Next = nullptr;
-		}
+		if (LinkedList<TValue>::IsEmpty())
+			LinkedList<TValue>::head =
+			LinkedList<TValue>::tail =
+			new LinkedList<TValue>::LinkedListNode(
+				value,
+				nullptr);
 		else
-		{
-			QueueNode* newNode = new QueueNode();
-			newNode->Value = value;
-			newNode->Next = nullptr;
-			tail->Next = newNode;
-			tail = newNode;
-		}
+			LinkedList<TValue>::head =
+			new LinkedList<TValue>::LinkedListNode(
+				value,
+				LinkedList<TValue>::head);
 	}
 
-	virtual int Pop()
+	TValue Pop() override
 	{
-		if (head == nullptr)
+		if (LinkedList<TValue>::IsEmpty())
 			return 0;
-		int result = head->Value;
-		QueueNode* forDelete = head;
-		head = head->Next;
 
-		if (head == nullptr)
-			tail = nullptr;
+		const TValue result = LinkedList<TValue>::head->Value;
+		const LinkedList<TValue>::LinkedListNode* forDelete =
+			LinkedList<TValue>::head;
+
+		LinkedList<TValue>::head = LinkedList<TValue>::head->Next;
+		if (LinkedList<TValue>::head == nullptr)
+			LinkedList<TValue>::tail = nullptr;
+
 		delete forDelete;
 		return result;
 	}
+};
 
-	virtual void ForEach(const function<void(int)> action) const
+template <typename TValue>
+class Queue : public LinkedList<TValue>
+{
+public:
+	void Push(const TValue& value) override
 	{
-		QueueNode* current = head;
-		while (current != nullptr)
-		{
-			action(current->Value);
-			current = current->Next;
-		}
+		if (LinkedList<TValue>::IsEmpty())
+			LinkedList<TValue>::head =
+			LinkedList<TValue>::tail =
+			new LinkedList<TValue>::LinkedListNode(value, nullptr);
+		else
+			LinkedList<TValue>::tail =
+			LinkedList<TValue>::tail->Next =
+			new LinkedList<TValue>::LinkedListNode(value, nullptr);
+	}
+
+	TValue Pop() override
+	{
+		if (LinkedList<TValue>::IsEmpty())
+			return 0;
+
+		const TValue result = LinkedList<TValue>::head->Value;
+		const LinkedList<TValue>::LinkedListNode* forDelete =
+			LinkedList<TValue>::head;
+
+		LinkedList<TValue>::head = LinkedList<TValue>::head->Next;
+		if (LinkedList<TValue>::head == nullptr)
+			LinkedList<TValue>::tail = nullptr;
+
+		delete forDelete;
+		return result;
 	}
 };
