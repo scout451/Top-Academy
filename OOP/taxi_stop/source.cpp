@@ -31,12 +31,10 @@ void main()
 
 	int timePass[4] = { 1, 2, 3, 4 };
 	int timeBus[4] = { 5, 6, 7, 8 };
-	string typeStopBus = "intermediate"; // либо "final"
 
 	int totalPass = 0;
 	int currentPass = 0;
 	int totalBus = 0;
-	int totalWaitTime = 0;
 	int totalTime = 1440; // минуты
 	int currentTime = 0;
 	int timeOfDay = 0; // 0 - утро, 1 - день, 2 - вечер, 3 - ночь
@@ -70,28 +68,29 @@ void main()
 			
 			if (currentPass < seats)
 			{
-				totalWaitTime += currentPass * currentTime;
 				currentPass = 0;
 			}
 			else
 			{
-				totalWaitTime += seats * currentTime;
 				currentPass -= seats;
 			}
-
 			ArriveTimeBus.push(currentTime + RandomTimeArrivalBus(timeBus[timeOfDay]));
 		}
 
-		if (currentTime > 360 || currentTime > 720 || currentTime > 1080)
-			timeOfDay++;
+		if (currentTime > 360 && currentTime < 720)
+			timeOfDay = 1;
+		else if (currentTime > 720 && currentTime < 1080)
+			timeOfDay = 2;
+		else if (currentTime > 1080 && currentTime < 1440)
+			timeOfDay = 3;
 	}
 
-	double averageWaitTime = totalWaitTime / totalPass;
+	double averageWaitTime = (double)totalTime / (double)totalPass;
 	double averageBusInterval = totalTime / totalBus;
 
 	cout << "Среднее время ожидания человека на остановке: " << averageWaitTime << endl;
-	std::cout << "Средний интервал времени между маршрутками: " << averageBusInterval << endl;
-	std::cout << "Общее количество пассажиров: " << totalPass << endl;
-	std::cout << "Общее количество маршруток: " << totalBus<< endl;
+	cout << "Средний интервал времени между маршрутками: " << averageBusInterval << endl;
+	cout << "Общее количество пассажиров: " << totalPass << endl;
+	cout << "Общее количество маршруток: " << totalBus<< endl;
 	system("pause");
 }
