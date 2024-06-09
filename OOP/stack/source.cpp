@@ -39,20 +39,11 @@ public:
 
 	Stack(Stack& other) : size(0), head(nullptr)
 	{
-		Node<T>* last = nullptr;
-		for (Node<T>* n = other.head; n != nullptr; n = n->next)
+		Node<T>* current = other.head;
+		while (current != nullptr)
 		{
-			Node<T>* item = new Node<T>(n->value);
-			if (!head)
-			{
-				head = item;
-			}
-			else
-			{
-				last->next = item;
-			}
-			last = item;
-			size++;
+			this->push_back(current->value);
+			current = current->next;
 		}
 	}
 
@@ -119,19 +110,35 @@ public:
 		return result;
 	}
 
-	Stack operator*(const Stack& other)
+	Stack operator*(const Stack& other) const
 	{
 		Stack result;
 
 		Node<T>* current = head;
-		while(current != nullptr)
+		while (current != nullptr)
 		{
-			if(other.head->value == current->value)
+			if (other.IsContains(current->value))
+			{
 				result.push_back(current->value);
+			}
 			current = current->next;
 		}
-		
+
 		return result;
+	}
+
+	bool IsContains(const T& value) const
+	{
+		Node<T>* current = head;
+		while (current != nullptr)
+		{
+			if (current->value == value)
+			{
+				return true;
+			}
+			current = current->next;
+		}
+		return false;
 	}
 
 
