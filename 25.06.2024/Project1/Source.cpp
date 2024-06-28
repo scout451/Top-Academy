@@ -134,7 +134,7 @@ void Task4()
     }
 	file.close();
 
-	char key ;
+	char key;
     int value = 0;
     ifstream file2("task3.txt");
     if (!file2.is_open())
@@ -160,7 +160,6 @@ void Task4()
             		i = numbers.insert(++i, 100);
             }
         }
-        
     }
     file2.close();
 
