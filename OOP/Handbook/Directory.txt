@@ -1,0 +1,96 @@
+Company name: Name
+Owner: Owner1
+Number: 123456
+Adress: Adress
+Type of activity: Activity1
+
+Company name: Name2
+Owner: Owner2
+Number: 123456789
+Adress: Adress2
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456
+Adress: Adress
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456741
+Adress: Adress3
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner1
+Number: 123456
+Adress: Adress
+Type of activity: Activity1
+
+Company name: Name2
+Owner: Owner2
+Number: 123456789
+Adress: Adress2
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456
+Adress: Adress
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456741
+Adress: Adress3
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner1
+Number: 123456
+Adress: Adress
+Type of activity: Activity1
+
+Company name: Name2
+Owner: Owner2
+Number: 123456789
+Adress: Adress2
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456
+Adress: Adress
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456741
+Adress: Adress3
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner1
+Number: 123456
+Adress: Adress
+Type of activity: Activity1
+
+Company name: Name2
+Owner: Owner2
+Number: 123456789
+Adress: Adress2
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456
+Adress: Adress
+Type of activity: Activity
+
+Company name: Name
+Owner: Owner
+Number: 123456741
+Adress: Adress3
+Type of activity: Activity
+
