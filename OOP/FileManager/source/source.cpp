@@ -2,11 +2,29 @@
 #include <vector>
 #include <fstream>
 #include <filesystem>
+#include <functional>
 #include <iostream>
 #include <Windows.h>
 
 using namespace std;
 using namespace std::filesystem;
+
+void AssertConstCharException(const char* previewMessage, function<void()> action)
+{
+	try
+	{
+		cout << previewMessage << endl;
+		action();
+	}
+	catch (const char* message)
+	{
+		cout << "Exception found! Message: " << message << endl << endl;
+		return;
+	}
+
+	cout << "Exception not found!" << endl << endl;
+	throw "Exception not found!";
+}
 
 class FileSystemObject
 {
@@ -186,13 +204,13 @@ public:
 				}
 				catch (const filesystem_error& error)
 				{
-					throw format("Access denied to: ", p);
+					throw format("Access denied to: {}", p);
 				}
 
 		}
 		catch (const filesystem_error& error)
 		{
-			throw format ("Error searching: ", mask);
+			throw format ("Error searching: {}", mask);
 		}
 		return matches;
 	}
@@ -238,53 +256,44 @@ void PrintMenu()
 	cout << "0. Выход" << endl;
 }
 
-void main()
+bool RunMenu(int action)
 {
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
-	//TestFileManager();
-	int action;
-
-	while (true)
+	switch (action)
 	{
-		PrintMenu();
-		cin >> action;
-		switch (action)
+	case 1:
 		{
-		case 1:
-			{
 			path sourcePath;
 			cout << "\n\nВведите путь: " << endl;
 			cin >> sourcePath;
 			FileManager::ContentsOfTheDisks(sourcePath);
 			system("pause");
 			break;
-			}
-		case 2:
-			{
+		}
+	case 2:
+		{
 			cout << "\n\nВыберите действие: " << endl;
 			cout << "1. Создать файл." << endl;
 			cout << "2. Создать папку.\n" << endl;
 			int createAction;
 			string sourcePath;
 			cin >> createAction;
-				if(createAction==1)
-				{
-					cout << "\n\nВведите название файла: " << endl;
-					cin >> sourcePath;
-					FileManager::CreatingFile(sourcePath);
-				}
-				else
-				{
-					cout << "\n\nВведите название папки: " << endl;
-					cin >> sourcePath;
-					FileManager::CreatingFolder(sourcePath);
-				}
-				cout << "Объект создан.\n\n" << endl;
+			if (createAction == 1)
+			{
+				cout << "\n\nВведите название файла: " << endl;
+				cin >> sourcePath;
+				FileManager::CreatingFile(sourcePath);
+			}
+			else
+			{
+				cout << "\n\nВведите название папки: " << endl;
+				cin >> sourcePath;
+				FileManager::CreatingFolder(sourcePath);
+			}
+			cout << "Объект создан.\n\n" << endl;
 			system("pause");
 			break;
-			}
-		case 3:
+		}
+	case 3:
 		{
 			path sourcePath;
 			cout << "\n\nВведите путь до объекта удаления: " << endl;
@@ -294,7 +303,7 @@ void main()
 			system("pause");
 			break;
 		}
-		case 4:
+	case 4:
 		{
 			path sourcePath;
 			path newName;
@@ -308,7 +317,7 @@ void main()
 			system("pause");
 			break;
 		}
-		case 5:
+	case 5:
 		{
 			cout << "\n\nВыберите действие: " << endl;
 			cout << "1. Копирование. " << endl;
@@ -320,40 +329,42 @@ void main()
 			{
 			case 1:
 				{
-				cout << "\n\nВведите путь до объекта копирования: " << endl;
-				cin >> sourcePath;
-				cout << "\n\nВведите путь куда скопировать объект: " << endl;
-				cin >> destPath;
-				FileManager::Copy(sourcePath.string(), destPath);
-				cout << "Объект скопирован\n\n" << endl;
-				break;
+					cout << "\n\nВведите путь до объекта копирования: " << endl;
+					cin >> sourcePath;
+					cout << "\n\nВведите путь куда скопировать объект: " << endl;
+					cin >> destPath;
+					FileManager::Copy(sourcePath.string(), destPath);
+					cout << "Объект скопирован\n\n" << endl;
+					break;
 				}
 			case 2:
-			{
-				cout << "\n\nВведите путь до объекта перемещения: " << endl;
-				cin >> sourcePath;
-				cout << "\n\nВведите путь куда переместить объект (в конце введите название файла с расширением): " << endl;
-				cin >> destPath;
-				FileManager::Move(sourcePath.string(), destPath);
-				cout << "Объект перемещен\n\n" << endl;
-				break;
-			default:
-				cout << "Неверный выбор действия" << endl;
-			}
+				{
+					cout << "\n\nВведите путь до объекта перемещения: " << endl;
+					cin >> sourcePath;
+					cout <<
+						"\n\nВведите путь куда переместить объект (в конце введите название файла с расширением): "
+						<< endl;
+					cin >> destPath;
+					FileManager::Move(sourcePath.string(), destPath);
+					cout << "Объект перемещен\n\n" << endl;
+					break;
+				default:
+					cout << "Неверный выбор действия" << endl;
+				}
 			}
 			system("pause");
 			break;
 		}
-		case 6:
-			{
+	case 6:
+		{
 			path sourcePath;
 			cout << "\n\nВведите путь до объекта: " << endl;
 			cin >> sourcePath;
-			cout << "Размер объекта = " << FileManager::GetSize(sourcePath.string()) << " байт\n\n"  << endl;
+			cout << "Размер объекта = " << FileManager::GetSize(sourcePath.string()) << " байт\n\n" << endl;
 			system("pause");
 			break;
-			}
-		case 7:
+		}
+	case 7:
 		{
 			path sourcePath;
 			string name;
@@ -366,21 +377,48 @@ void main()
 			system("pause");
 			break;
 		}
-		case 8:
-			{
-				system("cls");
-				break;
-			}
-		case 9:
-			{
-				path cur_path = current_path();
-				path par_path = cur_path.parent_path();
-				current_path(par_path);
-				break;
-			}
-		case 0:
-			return;
+	case 8:
+		{
+			system("cls");
+			break;
 		}
+	case 9:
+		{
+			path cur_path = current_path();
+			path par_path = cur_path.parent_path();
+			current_path(par_path);
+			break;
+		}
+	case 0:
+		return true;
+	}
+	return false;
+}
+
+void main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	//TestFileManager();
+	int action;
+
+	while (true)
+	{
+		PrintMenu();
+		cin >> action;
+		try
+		{
+			if (RunMenu(action)) return;
+		}
+		catch (const string& error)
+		{
+			cout << "Error: " << error << endl;
+		}
+		catch(...)
+		{
+			cout << "Unknown error" << endl;
+		}
+		
 	}
 	system("pause");
 }
