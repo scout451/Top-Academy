@@ -51,14 +51,14 @@ class FileManager
 public:
 	static void ContentsOfTheDisks(const path& p = current_path())
 	{
-		/*vector<path> contents;
-		for (const auto& dir_entry : recursive_directory_iterator(p)) //запись в вектор
-			contents.push_back(dir_entry.path());*/
-
 		try
 		{
-			for (const auto& dir_entry : recursive_directory_iterator(p)) //вывод в консоль
-				cout << dir_entry << endl;
+			if (exists(p) && is_directory(p))
+				for (const auto& dir_entry : recursive_directory_iterator(p))
+					cout << (is_directory(dir_entry) ? "[DIR] " : "[FILE] ") <<
+					dir_entry.path().filename().string() << endl;
+			else
+				cout << "The path does not exist" << endl;
 		}
 		catch (const filesystem_error& error)
 		{
@@ -75,7 +75,7 @@ public:
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Failed creating folder: " << error.what() << endl;
+			throw format("Failed creating folder: {}", folder);
 		}
 	}
 
@@ -88,7 +88,7 @@ public:
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Failed creating file: " << error.what() << endl;
+			throw format("Failed creating folder: {}", file);
 		}
 	}
 
@@ -99,12 +99,12 @@ public:
 			path FullPath = current_path() / obj;
 			if (remove_all(FullPath)!= 1);
 			{
-				throw string("File not found");
+				throw format("File not found: ", obj);
 			}
 		}
 		catch(const string& error)
 		{
-			cout << "Error removing: " << error << endl;
+			throw format("Failed removing: {}", obj);
 		}
 	}
 
@@ -117,7 +117,7 @@ public:
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error renaming: " << error.what() << endl;
+			throw format("Failed renaming object: {}", oldPath);
 		}
 	}
 
@@ -133,7 +133,7 @@ public:
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error copying: " << error.what() << endl;
+			throw format("Failed copying: {}", source);
 		}
 	}
 
@@ -146,7 +146,7 @@ public:
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error moving: " << error.what() << endl;
+			throw format("Failed moving: {}", oldPath);
 		}
 	}
 
@@ -168,8 +168,7 @@ public:
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error getting size: " << error.what() << endl;
-			return 0;
+			throw format("Failed getting size: {}", obj);
 		}
 	}
 
@@ -187,13 +186,13 @@ public:
 				}
 				catch (const filesystem_error& error)
 				{
-					cout << "Access denied to: "<< dirEntry << error.what() << endl;
+					throw format("Access denied to: ", p);
 				}
 
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error searching: " << error.what() << endl;
+			throw format ("Error searching: ", mask);
 		}
 		return matches;
 	}
@@ -258,7 +257,6 @@ void main()
 			cout << "\n\n¬ведите путь: " << endl;
 			cin >> sourcePath;
 			FileManager::ContentsOfTheDisks(sourcePath);
-			cout << "—одержимое вашей директории выведено в консоль.\n\n" << endl;
 			system("pause");
 			break;
 			}
