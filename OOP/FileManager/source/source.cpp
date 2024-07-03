@@ -2,11 +2,29 @@
 #include <vector>
 #include <fstream>
 #include <filesystem>
+#include <functional>
 #include <iostream>
 #include <Windows.h>
 
 using namespace std;
 using namespace std::filesystem;
+
+void AssertConstCharException(const char* previewMessage, function<void()> action)
+{
+	try
+	{
+		cout << previewMessage << endl;
+		action();
+	}
+	catch (const char* message)
+	{
+		cout << "Exception found! Message: " << message << endl << endl;
+		return;
+	}
+
+	cout << "Exception not found!" << endl << endl;
+	throw "Exception not found!";
+}
 
 class FileSystemObject
 {
@@ -49,16 +67,16 @@ public:
 class FileManager
 {
 public:
-	static void ContentsOfTheDisks(const path& p = ".")
+	static void ContentsOfTheDisks(const path& p = current_path())
 	{
-		/*vector<path> contents;
-		for (const auto& dir_entry : recursive_directory_iterator(p)) //запись в вектор
-			contents.push_back(dir_entry.path());*/
-
 		try
 		{
-			for (const auto& dir_entry : recursive_directory_iterator(p)) //вывод в консоль
-				cout << dir_entry << endl;
+			if (exists(p) && is_directory(p))
+				for (const auto& dir_entry : recursive_directory_iterator(p))
+					cout << (is_directory(dir_entry) ? "[DIR] " : "[FILE] ") <<
+					dir_entry.path().filename().string() << endl;
+			else
+				cout << "The path does not exist" << endl;
 		}
 		catch (const filesystem_error& error)
 		{
@@ -66,110 +84,119 @@ public:
  		}
 	}
 
-	static void CreatingFolder(const path& p = ".")
+	static void CreatingFolder(const string& folder)
 	{
 		try
 		{
-			create_directories(p);
+			path FullPath = current_path() / folder;
+			create_directories(FullPath);
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Failed creating folder: " << error.what() << endl;
+			throw format("Failed creating folder: {}", folder);
 		}
 	}
 
-	static void CreatingFile(const path& p)
+	static void CreatingFile(const string& file)
 	{
 		try
 		{
-			ofstream file(p);
+			path FullPath = current_path() / file;
+			ofstream file(FullPath);
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Failed creating file: " << error.what() << endl;
+			throw format("Failed creating folder: {}", file);
 		}
 	}
 
-	static void Remove(const path& p)
+	static void Remove(const string& obj)
 	{
 		try
 		{
-			if (remove_all(p) != 1);
-				throw string("File not found");
+			path FullPath = current_path() / obj;
+			if (remove_all(FullPath)!= 1);
+			{
+				throw format("File not found: ", obj);
+			}
 		}
 		catch(const string& error)
 		{
-			cout << "Error removing: " << error << endl;
+			throw format("Failed removing: {}", obj);
 		}
 	}
 
-	static void Rename(const path& oldPath, const path& newPath)
+	static void Rename(const string& oldPath, const path& newPath)
 	{
 		try
 		{
-			rename(oldPath, newPath);
+			path FullOldPath = current_path() / oldPath;
+			rename(FullOldPath, newPath);
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error renaming: " << error.what() << endl;
+			throw format("Failed renaming object: {}", oldPath);
 		}
 	}
 
-	static void Copy(const path& source, const path& dest)
+	static void Copy(const string& source, const path& dest)
 	{
 		try
 		{
-			if (is_directory(source))
-				copy(source, dest, copy_options::recursive);
+			path FullSourcePath = current_path() / source;
+			if (is_directory(FullSourcePath))
+				copy(FullSourcePath, dest / source, copy_options::recursive);
 			else
-				copy(source, dest);
+				copy(FullSourcePath, dest);
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error copying: " << error.what() << endl;
+			throw format("Failed copying: {}", source);
 		}
 	}
 
-	static void Move(const path& oldPath, const path& newPath)
+	static void Move(const string& oldPath, const path& newPath)
 	{
 		try
 		{
-			rename(oldPath, newPath);
+			path FullOldPath = current_path() / oldPath;
+			rename(FullOldPath, newPath / oldPath);
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error moving: " << error.what() << endl;
+			throw format("Failed moving: {}", oldPath);
 		}
 	}
 
-	static long long GetSize(const path& p)
+	static long long GetSize(const string& obj)
 	{
 		try
 		{
-			if (is_directory(p))
+			path FullOldPath = current_path() / obj;
+			if (is_directory(FullOldPath))
 			{
-				Folder folder(p);
+				Folder folder(FullOldPath);
 				return folder.GetSize();
 			}
 			else
 			{
-				File file(p);
+				File file(FullOldPath);
 				return file.GetSize();
 			}
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error getting size: " << error.what() << endl;
-			return 0;
+			throw format("Failed getting size: {}", obj);
 		}
 	}
 
-	static vector<path> Search(const string& mask, const path& p = ".")
+	static vector<path> Search(const string& mask, const string& p = ".")
 	{
 		vector<path> matches;
 		try
 		{
-			for(const auto& dirEntry : recursive_directory_iterator(p))
+			path FullOldPath = current_path() / p;
+			for(const auto& dirEntry : recursive_directory_iterator(FullOldPath))
 				try
 				{
 				if (dirEntry.path().filename().string().find(mask) != string::npos)
@@ -177,112 +204,106 @@ public:
 				}
 				catch (const filesystem_error& error)
 				{
-					cout << "Access denied to: "<< dirEntry << error.what() << endl;
+					throw format("Access denied to: {}", p);
 				}
 
 		}
 		catch (const filesystem_error& error)
 		{
-			cout << "Error searching: " << error.what() << endl;
+			throw format ("Error searching: {}", mask);
 		}
 		return matches;
 	}
 };
 
 
-void TestFileManager()
+//void TestFileManager()
+//{
+//	FileManager A;
+//	
+//	path newFolder = "C:\\Reps\\Top-Academy\\OOP\\FileManager\\source\\newFolder";
+//	path newPath = "C:\\Reps\\Top-Academy\\OOP\\FileManager\\source\\oldFolder";
+//	path newFile = newFolder / "newFile.txt";
+//	path newNameFile = newPath / "File.txt";
+//	//A.ContentsOfTheDisks();
+//	A.CreatingFolder(newFolder);
+//	A.CreatingFile(newFile);
+//	//A.RemoveFile(newFile);
+//	//A.Rename(newFolder, newPath);
+//	//A.Rename(newPath / "newFile.txt", newNameFile);
+//	A.Copy(newFolder, ".\\copyingFolder");
+//	cout << A.GetSize("C:\\Reps\\Top-Academy\\OOP\\FileManager\\source\\source.cpp")<<endl;
+//	for (auto pathses : A.Search("qwerty.txt", "C:\\"))
+//		cout << pathses << endl;
+//	A.Remove(newFolder);
+//	A.Remove(".\\copyingFolder");
+//}
+
+void PrintMenu()
 {
-	FileManager A;
-	
-	path newFolder = "C:\\Reps\\Top-Academy\\OOP\\FileManager\\source\\newFolder";
-	path newPath = "C:\\Reps\\Top-Academy\\OOP\\FileManager\\source\\oldFolder";
-	path newFile = newFolder / "newFile.txt";
-	path newNameFile = newPath / "File.txt";
-	//A.ContentsOfTheDisks();
-	A.CreatingFolder(newFolder);
-	A.CreatingFile(newFile);
-	//A.RemoveFile(newFile);
-	//A.Rename(newFolder, newPath);
-	//A.Rename(newPath / "newFile.txt", newNameFile);
-	A.Copy(newFolder, ".\\copyingFolder");
-	cout << A.GetSize("C:\\Reps\\Top-Academy\\OOP\\FileManager\\source\\source.cpp")<<endl;
-	for (auto pathses : A.Search("qwerty.txt", "C:\\"))
-		cout << pathses << endl;
-	A.Remove(newFolder);
-	A.Remove(".\\copyingFolder");
+	cout << "Программа File Manager" << endl;
+	cout << "Выберите действие и нажмите цифру:" << endl;
+	cout << "\nТекущая директория: " << current_path() << endl << endl;
+	cout << "1. Показывать содержимое дисков " << endl;
+	cout << "2. Создавать папки / файлы " << endl;
+	cout << "3. Удалять папки / файлы" << endl;
+	cout << "4. Переименовывать папки / файлы" << endl;
+	cout << "5. Копировать / переносить папки / файлы" << endl;
+	cout << "6. Вычислять размер папки / файла" << endl;
+	cout << "7. Производить поиск по маске(с поиском по подпапкам)" << endl;
+	cout << "8. Очистить консоль" << endl;
+	cout << "9. Переместиться в директорию выше." << endl;
+	cout << "0. Выход" << endl;
 }
 
-void main()
+bool RunMenu(int action)
 {
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
-	//TestFileManager();
-	int action;
-
-	while (true)
+	switch (action)
 	{
-		cout << "Программа File Manager" << endl;
-		cout << "Выберите действие и нажмите цифру:" << endl;
-		cout << "1. Показывать содержимое дисков " << endl;
-		cout << "2. Создавать папки / файлы " << endl;
-		cout << "3. Удалять папки / файлы" << endl;
-		cout << "4. Переименовывать папки / файлы" << endl;
-		cout << "5. Копировать / переносить папки / файлы" << endl;
-		cout << "6. Вычислять размер папки / файла" << endl;
-		cout << "7. Производить поиск по маске(с поиском по подпапкам)" << endl;
-		cout << "8. Очистить консоль" << endl;
-		cout << "0. Выход" << endl;
-		cin >> action;
-		switch (action)
+	case 1:
 		{
-		case 1:
-			{
 			path sourcePath;
 			cout << "\n\nВведите путь: " << endl;
 			cin >> sourcePath;
 			FileManager::ContentsOfTheDisks(sourcePath);
-			cout << "Содержимое вашей директории выведено в консоль.\n\n" << endl;
 			system("pause");
 			break;
-			}
-		case 2:
-			{
+		}
+	case 2:
+		{
 			cout << "\n\nВыберите действие: " << endl;
 			cout << "1. Создать файл." << endl;
 			cout << "2. Создать папку.\n" << endl;
 			int createAction;
-			path sourcePath;
+			string sourcePath;
 			cin >> createAction;
-				if(createAction==1)
-				{
-					cout << "\n\nВведите путь создания файла, в конце пути добавьте название файла: " << endl;
-					cout << "По умолчанию вы находитесь в директории самой программы." << endl;
-					cin >> sourcePath;
-					FileManager::CreatingFile(sourcePath);
-				}
-				else
-				{
-					cout << "\n\nВведите путь создания папки, в конце пути добавьте название папки: " << endl;
-					cout << "По умолчанию вы находитесь в директории самой программы." << endl;
-					cin >> sourcePath;
-					FileManager::CreatingFolder(sourcePath);
-				}
-				cout << "Объект создан.\n\n" << endl;
+			if (createAction == 1)
+			{
+				cout << "\n\nВведите название файла: " << endl;
+				cin >> sourcePath;
+				FileManager::CreatingFile(sourcePath);
+			}
+			else
+			{
+				cout << "\n\nВведите название папки: " << endl;
+				cin >> sourcePath;
+				FileManager::CreatingFolder(sourcePath);
+			}
+			cout << "Объект создан.\n\n" << endl;
 			system("pause");
 			break;
-			}
-		case 3:
+		}
+	case 3:
 		{
 			path sourcePath;
 			cout << "\n\nВведите путь до объекта удаления: " << endl;
-			cout << "По умолчанию вы находитесь в директории самой программы." << endl;
 			cin >> sourcePath;
-			FileManager::Remove(sourcePath);
+			FileManager::Remove(sourcePath.string());
 			cout << "Объект удален.\n\n" << endl;
 			system("pause");
 			break;
 		}
-		case 4:
+	case 4:
 		{
 			path sourcePath;
 			path newName;
@@ -291,12 +312,12 @@ void main()
 			cout << "\n\nВведите новое имя: " << endl;
 			cin >> newName;
 			path newFullPath = sourcePath.parent_path() / newName;
-			FileManager::Rename(sourcePath, newFullPath);
+			FileManager::Rename(sourcePath.string(), newFullPath);
 			cout << "Объект переименован.\n\n" << endl;
 			system("pause");
 			break;
 		}
-		case 5:
+	case 5:
 		{
 			cout << "\n\nВыберите действие: " << endl;
 			cout << "1. Копирование. " << endl;
@@ -308,61 +329,96 @@ void main()
 			{
 			case 1:
 				{
-				cout << "\n\nВведите путь до объекта копирования: " << endl;
-				cin >> sourcePath;
-				cout << "\n\nВведите путь куда скопировать объект: " << endl;
-				cin >> destPath;
-				FileManager::Copy(sourcePath, destPath);
-				cout << "Объект скопирован\n\n" << endl;
-				break;
+					cout << "\n\nВведите путь до объекта копирования: " << endl;
+					cin >> sourcePath;
+					cout << "\n\nВведите путь куда скопировать объект: " << endl;
+					cin >> destPath;
+					FileManager::Copy(sourcePath.string(), destPath);
+					cout << "Объект скопирован\n\n" << endl;
+					break;
 				}
 			case 2:
-			{
-				cout << "\n\nВведите путь до объекта перемещения: " << endl;
-				cin >> sourcePath;
-				cout << "\n\nВведите путь куда переместить объект (в конце введите название файла с расширением): " << endl;
-				cin >> destPath;
-				FileManager::Move(sourcePath, destPath);
-				cout << "Объект перемещен\n\n" << endl;
-				break;
-			default:
-				cout << "Неверный выбор действия" << endl;
-			}
+				{
+					cout << "\n\nВведите путь до объекта перемещения: " << endl;
+					cin >> sourcePath;
+					cout <<
+						"\n\nВведите путь куда переместить объект (в конце введите название файла с расширением): "
+						<< endl;
+					cin >> destPath;
+					FileManager::Move(sourcePath.string(), destPath);
+					cout << "Объект перемещен\n\n" << endl;
+					break;
+				default:
+					cout << "Неверный выбор действия" << endl;
+				}
 			}
 			system("pause");
 			break;
 		}
-		case 6:
-			{
+	case 6:
+		{
 			path sourcePath;
 			cout << "\n\nВведите путь до объекта: " << endl;
 			cin >> sourcePath;
-			cout << "Размер объекта = " << FileManager::GetSize(sourcePath) << " байт\n\n"  << endl;
+			cout << "Размер объекта = " << FileManager::GetSize(sourcePath.string()) << " байт\n\n" << endl;
 			system("pause");
 			break;
-			}
-		case 7:
+		}
+	case 7:
 		{
 			path sourcePath;
 			string name;
 			cout << "\n\nВведите название объекта: " << endl;
 			cin >> name;
 			cout << "Введите директорию, где производить поиск: " << endl;
-			cout << "По умолчанию вы находитесь в директории самой программы." << endl;
 			cin >> sourcePath;
-			for (auto pathses : FileManager::Search(name, sourcePath))
+			for (auto pathses : FileManager::Search(name, sourcePath.string()))
 				cout << "Путь до файла: " << pathses << endl;
 			system("pause");
 			break;
 		}
-		case 8:
+	case 8:
+		{
 			system("cls");
 			break;
-		case 0:
-			return;
-		default:
-			cout << "Введите валидное значение" << endl;
 		}
+	case 9:
+		{
+			path cur_path = current_path();
+			path par_path = cur_path.parent_path();
+			current_path(par_path);
+			break;
+		}
+	case 0:
+		return true;
+	}
+	return false;
+}
+
+void main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	//TestFileManager();
+	int action;
+
+	while (true)
+	{
+		PrintMenu();
+		cin >> action;
+		try
+		{
+			if (RunMenu(action)) return;
+		}
+		catch (const string& error)
+		{
+			cout << "Error: " << error << endl;
+		}
+		catch(...)
+		{
+			cout << "Unknown error" << endl;
+		}
+		
 	}
 	system("pause");
 }
