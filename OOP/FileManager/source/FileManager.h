@@ -27,11 +27,14 @@ public:
 		return cache[pathStr];
 	}
 
-	static void ContentsOfTheDisks(const path& p = current_path())
+	static void ContentsOfTheDisks(const path& p)
 	{
 		try
 		{
-			Folder* folder = GetFolder(p);
+			if (p == ".")
+				Folder* folder = GetFolder(current_path());
+			else
+				Folder* folder = GetFolder(p);
 
 			for (const auto& dir_entry : directory_iterator(p))
 				cout << (is_directory(dir_entry) ? "[DIR] " : "[FILE] ") <<
@@ -180,6 +183,12 @@ public:
 		}
 		return matches;
 	}
-};
 
+	static void ClearCache()
+	{
+		for (auto& entry : cache)
+			delete entry.second;
+		cache.clear();
+	}
+};
 map<string, Folder*> FileManager::cache;

@@ -64,12 +64,10 @@ public:
 
 	void UpdateFromDisk() override
 	{
-		// Очищаем текущее содержимое
 		for (auto obj : contents)
 			delete obj;
 		contents.clear();
 
-		// Читаем содержимое папки с диска
 		for (const auto& entry : directory_iterator(GetPath()))
 		{
 			if (is_regular_file(entry))
