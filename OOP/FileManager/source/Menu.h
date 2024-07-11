@@ -8,10 +8,7 @@ using namespace std::filesystem;
 
 bool RunMenu(int action)
 {
-<<<<<<< HEAD
 	FileManager obj;
-=======
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	switch (action)
 	{
 	case 0:
@@ -34,11 +31,7 @@ bool RunMenu(int action)
 		path sourcePath;
 		cout << "\n\nВведите путь: " << endl;
 		cin >> sourcePath;
-<<<<<<< HEAD
 		obj.ContentsOfTheDisks(sourcePath);
-=======
-		FileManager::ContentsOfTheDisks(sourcePath);
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 		system("pause");
 		break;
 	}
@@ -54,21 +47,13 @@ bool RunMenu(int action)
 		{
 			cout << "\n\nВведите название файла: " << endl;
 			cin >> sourcePath;
-<<<<<<< HEAD
 			obj.CreatingFile(sourcePath);
-=======
-			FileManager::CreatingFile(sourcePath);
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 		}
 		else
 		{
 			cout << "\n\nВведите название папки: " << endl;
 			cin >> sourcePath;
-<<<<<<< HEAD
 			obj.CreatingFolder(sourcePath);
-=======
-			FileManager::CreatingFolder(sourcePath);
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 		}
 		cout << "Объект создан.\n\n" << endl;
 		system("pause");
@@ -79,11 +64,7 @@ bool RunMenu(int action)
 		path sourcePath;
 		cout << "\n\nВведите путь до объекта удаления: " << endl;
 		cin >> sourcePath;
-<<<<<<< HEAD
 		obj.Remove(sourcePath.string());
-=======
-		FileManager::Remove(sourcePath.string());
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 		cout << "Объект удален.\n\n" << endl;
 		system("pause");
 		break;
@@ -97,11 +78,7 @@ bool RunMenu(int action)
 		cout << "\n\nВведите новое имя: " << endl;
 		cin >> newName;
 		path newFullPath = sourcePath.parent_path() / newName;
-<<<<<<< HEAD
 		obj.Rename(sourcePath.string(), newFullPath);
-=======
-		FileManager::Rename(sourcePath.string(), newFullPath);
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 		cout << "Объект переименован.\n\n" << endl;
 		system("pause");
 		break;
@@ -122,11 +99,7 @@ bool RunMenu(int action)
 			cin >> sourcePath;
 			cout << "\n\nВведите путь куда скопировать объект: " << endl;
 			cin >> destPath;
-<<<<<<< HEAD
 			obj.Copy(sourcePath.string(), destPath);
-=======
-			FileManager::Copy(sourcePath.string(), destPath);
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 			cout << "Объект скопирован\n\n" << endl;
 			break;
 		}
@@ -138,11 +111,7 @@ bool RunMenu(int action)
 				"\n\nВведите путь куда переместить объект (в конце введите название файла с расширением): "
 				<< endl;
 			cin >> destPath;
-<<<<<<< HEAD
 			obj.Move(sourcePath.string(), destPath);
-=======
-			FileManager::Move(sourcePath.string(), destPath);
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 			cout << "Объект перемещен\n\n" << endl;
 			break;
 		default:
@@ -157,11 +126,7 @@ bool RunMenu(int action)
 		path sourcePath;
 		cout << "\n\nВведите путь до объекта: " << endl;
 		cin >> sourcePath;
-<<<<<<< HEAD
 		cout << "Размер объекта = " << obj.GetSize(sourcePath.string()) << " байт\n\n" << endl;
-=======
-		cout << "Размер объекта = " << FileManager::GetSize(sourcePath.string()) << " байт\n\n" << endl;
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 		system("pause");
 		break;
 	}
@@ -173,11 +138,7 @@ bool RunMenu(int action)
 		cin >> name;
 		cout << "Введите директорию, где производить поиск: " << endl;
 		cin >> sourcePath;
-<<<<<<< HEAD
 		for (auto pathses : obj.Search(name, sourcePath.string()))
-=======
-		for (auto pathses : FileManager::Search(name, sourcePath.string()))
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 			cout << "Путь до файла: " << pathses << endl;
 		system("pause");
 		break;

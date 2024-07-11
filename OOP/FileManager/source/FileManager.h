@@ -13,14 +13,10 @@ using namespace std::filesystem;
 
 class FileManager
 {
-<<<<<<< HEAD
-	FileManager* obj;
-=======
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	static map<string, Folder*> cache;
-
+	FileManager* obj;
 public:
-	static Folder* GetFolder(const path& p)
+	Folder* GetFolder(const path& p)
 	{
 		string pathStr = p.string();
 		if (!cache.contains(pathStr))
@@ -31,11 +27,7 @@ public:
 		return cache[pathStr];
 	}
 
-<<<<<<< HEAD
 	void ContentsOfTheDisks(const path& p)
-=======
-	static void ContentsOfTheDisks(const path& p)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -54,21 +46,13 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	void InCache(path FullPath)
-=======
-	static void InCache(path FullPath)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		if (cache.contains(FullPath.parent_path().string()))
 			cache[FullPath.parent_path().string()]->UpdateFromDisk();
 	}
 
-<<<<<<< HEAD
 	void CreatingFolder(const string& folder)
-=======
-	static void CreatingFolder(const string& folder)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -82,11 +66,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	void CreatingFile(const string& file)
-=======
-	static void CreatingFile(const string& file)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -100,11 +80,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	void Remove(const string& obj)
-=======
-	static void Remove(const string& obj)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -118,11 +94,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	void Rename(const string& oldPath, const path& newPath)
-=======
-	static void Rename(const string& oldPath, const path& newPath)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -136,11 +108,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	void Copy(const string& source, const path& dest)
-=======
-	static void Copy(const string& source, const path& dest)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -158,11 +126,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	void Move(const string& oldPath, const path& newPath)
-=======
-	static void Move(const string& oldPath, const path& newPath)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -177,11 +141,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	long long GetSize(const string& obj)
-=======
-	static long long GetSize(const string& obj)
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		try
 		{
@@ -200,11 +160,7 @@ public:
 		}
 	}
 
-<<<<<<< HEAD
 	vector<path> Search(const string& mask, const string& p = ".")
-=======
-	static vector<path> Search(const string& mask, const string& p = ".")
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		vector<path> matches;
 		try
@@ -228,11 +184,7 @@ public:
 		return matches;
 	}
 
-<<<<<<< HEAD
 	void ClearCache()
-=======
-	static void ClearCache()
->>>>>>> bc2db5c30b916523681c0acf39342e9f6e472b48
 	{
 		for (auto& entry : cache)
 			delete entry.second;
