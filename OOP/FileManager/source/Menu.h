@@ -33,6 +33,7 @@ bool RunMenu(int action)
 		cin >> sourcePath;
 		obj.ContentsOfTheDisks(sourcePath);
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 2:
@@ -57,6 +58,7 @@ bool RunMenu(int action)
 		}
 		cout << "Объект создан.\n\n" << endl;
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 3:
@@ -67,6 +69,7 @@ bool RunMenu(int action)
 		obj.Remove(sourcePath.string());
 		cout << "Объект удален.\n\n" << endl;
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 4:
@@ -81,6 +84,7 @@ bool RunMenu(int action)
 		obj.Rename(sourcePath.string(), newFullPath);
 		cout << "Объект переименован.\n\n" << endl;
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 5:
@@ -101,6 +105,8 @@ bool RunMenu(int action)
 			cin >> destPath;
 			obj.Copy(sourcePath.string(), destPath);
 			cout << "Объект скопирован\n\n" << endl;
+			system("pause");
+			cout << endl << endl;
 			break;
 		}
 		case 2:
@@ -113,12 +119,15 @@ bool RunMenu(int action)
 			cin >> destPath;
 			obj.Move(sourcePath.string(), destPath);
 			cout << "Объект перемещен\n\n" << endl;
+			system("pause");
+			cout << endl << endl;
 			break;
 		default:
 			cout << "Неверный выбор действия" << endl;
 		}
 		}
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 6:
@@ -128,6 +137,7 @@ bool RunMenu(int action)
 		cin >> sourcePath;
 		cout << "Размер объекта = " << obj.GetSize(sourcePath.string()) << " байт\n\n" << endl;
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 7:
@@ -141,14 +151,10 @@ bool RunMenu(int action)
 		for (auto pathses : obj.Search(name, sourcePath.string()))
 			cout << "Путь до файла: " << pathses << endl;
 		system("pause");
+		cout << endl << endl;
 		break;
 	}
 	case 8:
-	{
-		system("cls");
-		break;
-	}
-	case 9:
 	{
 		path cur_path = current_path();
 		path par_path = cur_path.parent_path();
@@ -159,19 +165,29 @@ bool RunMenu(int action)
 	return false;
 }
 
-void PrintMenu()
+void PrintMenu(int selectedOption)
 {
 	cout << "Программа File Manager" << endl;
-	cout << "Выберите действие и нажмите цифру:" << endl;
+	cout << "Выберите действие и нажмите ENTER:" << endl;
 	cout << "\nТекущая директория: " << current_path() << endl << endl;
-	cout << "0. Перейти в другую директорию" << endl;
-	cout << "1. Показывать содержимое дисков " << endl;
-	cout << "2. Создавать папки / файлы " << endl;
-	cout << "3. Удалять папки / файлы" << endl;
-	cout << "4. Переименовывать папки / файлы" << endl;
-	cout << "5. Копировать / переносить папки / файлы" << endl;
-	cout << "6. Вычислять размер папки / файла" << endl;
-	cout << "7. Производить поиск по маске(с поиском по подпапкам)" << endl;
-	cout << "8. Очистить консоль" << endl;
-	cout << "9. Переместиться в директорию выше." << endl;
+
+	vector<string> options = {
+		"Перейти в другую директорию",
+		"Показывать содержимое дисков",
+		"Создавать папки / файлы",
+		"Удалять папки / файлы",
+		"Переименовывать папки / файлы",
+		"Копировать / переносить папки / файлы",
+		"Вычислять размер папки / файла",
+		"Производить поиск по маске(с поиском по подпапкам)",
+		"Переместиться в директорию выше.",
+		"Выход." };
+
+	for (int i = 0; i < options.size(); ++i)
+	{
+		if (i == selectedOption)
+			cout << "> " << options[i] << " <" << endl;
+		else
+			cout << options[i] << endl;
+	}
 }

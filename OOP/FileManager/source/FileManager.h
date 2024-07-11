@@ -85,7 +85,8 @@ public:
 		try
 		{
 			path FullPath = current_path() / obj;
-			if (remove_all(FullPath) != 1);
+			if (remove_all(FullPath) != 1)
+				throw format("Failed removing: {}", obj);
 			InCache(FullPath);
 		}
 		catch (const string& error)
